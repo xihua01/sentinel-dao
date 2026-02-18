@@ -22,7 +22,7 @@ Sentinel acts as an **On-Chain Firewall**. It sits between the treasury and the 
 Sentinel DAO leverages **Arbitrum Stylus** to perform heavy computation (Risk Scoring & Policy Checks) efficiently using Rust, while keeping the vault logic in Solidity.
 
 ### 🔗 Deployed Contracts (Arbitrum Sepolia)
-* **Gateway / Vault (Solidity):** [`0xb04c22a9635a4f74e972a2df60c5c2fefd98a327`](https://sepolia.arbiscan.io/address/0xb04c22a9635a4f74e972a2df60c5c2fefd98a327)
+* **Gateway / Vault (Solidity):** [`0xb04c22a9635a4f74e972a2df60c5c2fefd98a327`](https://arbitrum-sepolia.blockscout.com/address/0xb04C22a9635A4f74e972A2df60c5C2fEfD98A327)
     * *Entry point for all user interactions.*
 * **Policy Engine (Rust/Stylus):** `0x6ae7760270787324f187111bfc6096d0094778a3`
     * *Compiles compliance logic into WASM.*

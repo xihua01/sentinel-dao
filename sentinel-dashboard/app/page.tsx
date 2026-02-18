@@ -63,8 +63,8 @@ export default function Home() {
   });
 
   // Parsing Data
-  const targetIsWhitelisted = targetUserData ? targetUserData[0] : false;
-  const targetTrustScore = targetUserData ? Number(targetUserData[1]) : 0;
+  const targetIsWhitelisted = targetUserData ? (targetUserData as any)[0] : false;
+  const targetTrustScore = targetUserData ? Number((targetUserData as any)[1]) : 0;
 
   // === HANDLERS ===
   const handleGuardianAction = (actionName: string, fnName: string, args: any[]) => {

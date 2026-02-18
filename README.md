@@ -17,6 +17,39 @@ Sentinel acts as an **On-Chain Firewall**. It sits between the treasury and the 
 - **Frontend:** Next.js, Tailwind CSS, RainbowKit, Wagmi.
 - **Chain:** Arbitrum Sepolia.
 
+## 🏗️ Architecture & Verification (Hybrid Solidity + Stylus)
+
+Sentinel DAO leverages **Arbitrum Stylus** to perform heavy computation (Risk Scoring & Policy Checks) efficiently using Rust, while keeping the vault logic in Solidity.
+
+### 🔗 Deployed Contracts (Arbitrum Sepolia)
+* **Gateway / Vault (Solidity):** [`0xb04c22a9635a4f74e972a2df60c5c2fefd98a327`](https://sepolia.arbiscan.io/address/0xb04c22a9635a4f74e972a2df60c5c2fefd98a327)
+    * *Entry point for all user interactions.*
+* **Policy Engine (Rust/Stylus):** `0x6ae7760270787324f187111bfc6096d0094778a3`
+    * *Compiles compliance logic into WASM.*
+
+### ⚡ Proof of Stylus Execution
+Since the Policy Engine performs read-only checks (Risk Score Validation), the interaction occurs via **`STATICCALL`**. These are not top-level transactions but are visible in the **Internal Call Traces**.
+
+**Evidence from Blockscout Raw Trace:**
+The Solidity contract (`...a327`) successfully calls the Rust program (`...78a3`) to validate transactions.
+
+```json
+// Extracted from Transaction Trace
+{
+  "calls": [
+      {
+          "from": "0xb04c22a9635a4f74e972a2df60c5c2fefd98a327",   // Solidity Vault (Caller)
+          "gas": "0x8821",
+          "gasUsed": "0x2cc9",                                  // Efficient execution via WASM
+          "input": "0xcc1dd94f0000000000000000000000000c3723303891f9d0116c6b03980e02c675ea9fb40000000000000000000000001960c0c9a89755ea6e56758c8ffb1e03180b15210000000000000000000000000000000000000000000000056bc75e2d63100000",
+          "output": "0x0000000000000000000000000000000000000000000000000000000000000001", // Returns 1 (true/valid)
+          "to": "0x6ae7760270787324f187111bfc6096d0094778a3",     // Rust Stylus Contract (Logic Layer)
+          "type": "STATICCALL"                                    // Proof of Stylus Integration
+      }
+  ]
+}
+```
+
 ## 📦 How to Run
 
 ### 1. Contracts (Rust & Solidity)

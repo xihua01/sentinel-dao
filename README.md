@@ -61,17 +61,21 @@ The Solidity contract (`...a327`) successfully calls the Rust program (`...78a3`
 }
 ```
 
-## 📦 How to Run
+## 🧪 Live Demo & Sandbox Credentials
 
-### 1. Contracts (Rust & Solidity)
-```bash
-cd sentinel-contracts
-cargo stylus deploy ...
-npx hardhat run scripts/manual-deploy.ts
-```
-### 2. Dashboard (Frontend)
-```bash
-cd sentinel-dashboard
-npm install
-npm run dev
-```
+**🌐 Try it now:** [Sentinel DAO Live App](https://xihua01-sentinel-dao.vercel.app/)
+
+To test the **"Panic Freeze"** feature and dynamic policy engine without setting up your own environment, please use our dedicated Testnet Guardian account on Arbitrum Sepolia.
+
+**👮 Guardian Login (Admin):**
+- **Private Key:** `13a682229bd044e3b5441378b0ac068259cb76866633d300b3d6ad1127ad6fc0`
+- **Role:** Security Council (Can update policies and freeze contributors)
+
+**📝 Quick Testing Steps for Judges:**
+1. Import the Guardian Private Key above into your Web3 Wallet (e.g., MetaMask).
+2. Connect to the Sentinel DAO dashboard.
+3. In the "Treasury Guard Console" (Right Panel), input a test contributor address (or use this whitelisted dummy: `0x0C3723303891F9D0116C6B03980e02C675EA9FB4`).
+4. Drop their Trust Score to `10` and click **Update Policy**.
+5. The UI will immediately flag the account as **FROZEN**, and the Rust execution layer will block any further transfers from that address.
+
+*(Note: This wallet is strictly for testing purposes on Arbitrum Sepolia and holds no real mainnet value).*

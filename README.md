@@ -60,6 +60,15 @@ The Solidity contract (`...a327`) successfully calls the Rust program (`...78a3`
   ]
 }
 ```
+## ⚙️ Architecture Flow
+```mermaid
+graph TD;
+    A[DAO Contributor] -->|Sign Tx| B(Next.js Dashboard);
+    B -->|Call function| C[Solidity Interface];
+    C -->|Check Policy| D{Rust Policy Engine - Stylus};
+    D -->|Pass| E[Execute Transfer];
+    D -->|Fail / Low Trust| F[Revert: Blocked by Firewall];
+```
 
 ## 🧪 Live Demo & Sandbox Credentials
 

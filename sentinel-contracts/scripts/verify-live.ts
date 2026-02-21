@@ -3,23 +3,20 @@ import { privateKeyToAccount, generatePrivateKey } from "viem/accounts";
 import { arbitrumSepolia } from "viem/chains";
 import SentinelRWAArtifact from "../artifacts/contracts/SentinelToken.sol/SentinelRWA.json";
 
-// ⚠️ GANTI DENGAN ALAMAT TERBARU ANDA
 const TOKEN_ADDRESS = "0xb04c22a9635a4f74e972a2df60c5c2fefd98a327" as `0x${string}`; 
 const RUST_ADDRESS = "0x6ae7760270787324f187111bfc6096d0094778a3" as `0x${string}`;
 
-// Generate User B (Penerima) secara otomatis/acak
 const recipientPrivateKey = generatePrivateKey();
 const recipientAccount = privateKeyToAccount(recipientPrivateKey);
 const RECIPIENT_ADDRESS = recipientAccount.address;
 
-const TRANSFER_AMOUNT = 500n; // 500 Wei
+const TRANSFER_AMOUNT = 500n;
 
 async function main() {
   console.log("\n" + "=".repeat(80));
   console.log("🎯 SENTINEL RWA: TRANSFER TO OTHER USER (User B)");
   console.log("=".repeat(80));
 
-  // Setup Admin (Anda)
   const privateKey = process.env.ARBITRUM_SEPOLIA_PRIVATE_KEY!;
   const rpcUrl = process.env.ARBITRUM_SEPOLIA_RPC_URL!;
   const adminAccount = privateKeyToAccount(`0x${privateKey.replace('0x', '')}` as `0x${string}`);
@@ -37,9 +34,6 @@ async function main() {
   console.log(`👤 User B (Receiver): ${RECIPIENT_ADDRESS} (Generated Randomly)`);
   console.log(`💰 Amount           : ${TRANSFER_AMOUNT} Wei`);
 
-  // ---------------------------------------------------------
-  // STEP 1: Pastikan Admin (Sender) sudah Whitelist
-  // ---------------------------------------------------------
   console.log("\n" + "-".repeat(60));
   console.log("🛠️ STEP 1: Cek Whitelist Admin");
   try {
@@ -51,9 +45,6 @@ async function main() {
       console.log("✅ Admin sudah whitelisted sebelumnya.");
   }
 
-  // ---------------------------------------------------------
-  // STEP 2: Whitelist User B (Penerima)
-  // ---------------------------------------------------------
   console.log("\n" + "-".repeat(60));
   console.log("🛠️ STEP 2: Mendaftarkan User B (Receiver) ke Whitelist");
   console.log("   (Tanpa langkah ini, Transfer PASTI Gagal karena logic Rust)");
@@ -63,9 +54,6 @@ async function main() {
   await publicClient.waitForTransactionReceipt({ hash: wlReceiverHash });
   console.log("✅ User B Berhasil di-Whitelist!");
 
-  // ---------------------------------------------------------
-  // STEP 3: Transfer Token ke User B
-  // ---------------------------------------------------------
   console.log("\n" + "-".repeat(60));
   console.log("💸 STEP 3: Transfer Token ke User B");
   
@@ -75,7 +63,6 @@ async function main() {
     await publicClient.waitForTransactionReceipt({ hash: txHash });
     console.log("✅ PASS: Transfer Sukses! (Karena Sender & Receiver Whitelisted)");
     
-    // Cek Saldo User B
     const balanceB = await token.read.balanceOf([RECIPIENT_ADDRESS]);
     console.log(`💰 Saldo User B sekarang: ${balanceB} Wei`);
   } catch (error: any) {
@@ -83,9 +70,7 @@ async function main() {
     return; // Stop jika gagal di sini
   }
 
-  // ---------------------------------------------------------
-  // STEP 4: Cabut Izin User B (Revoke)
-  // ---------------------------------------------------------
+
   console.log("\n" + "-".repeat(60));
   console.log("🚫 STEP 4: Revoke (Hapus) User B dari Whitelist");
   
@@ -94,9 +79,7 @@ async function main() {
   await publicClient.waitForTransactionReceipt({ hash: revokeHash });
   console.log("✅ User B Berhasil Dihapus/Blacklist.");
 
-  // ---------------------------------------------------------
-  // STEP 5: Coba Transfer Lagi ke User B (Harus Gagal)
-  // ---------------------------------------------------------
+
   console.log("\n" + "-".repeat(60));
   console.log("🧪 STEP 5: Coba Transfer Lagi ke User B (Expected: Gagal)");
   

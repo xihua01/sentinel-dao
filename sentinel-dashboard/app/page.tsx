@@ -63,8 +63,8 @@ export default function Home() {
   });
 
   // Parsing Data
-  const targetIsWhitelisted = targetUserData ? targetUserData[0] : false;
-  const targetTrustScore = targetUserData ? Number(targetUserData[1]) : 0;
+  const targetIsWhitelisted = targetUserData ? (targetUserData as any)[0] : false;
+  const targetTrustScore = targetUserData ? Number((targetUserData as any)[1]) : 0;
 
   // === HANDLERS ===
   const handleGuardianAction = (actionName: string, fnName: string, args: any[]) => {
@@ -278,7 +278,7 @@ export default function Home() {
                 <div className="bg-slate-900 rounded-lg p-4 border border-slate-800 animate-in zoom-in-95">
                   <div className="flex justify-between items-center mb-4">
                     <p className="text-[10px] text-slate-500 uppercase font-mono">Live Stylus State</p>
-                    {isConnectedToRust && <span className="text-[10px] text-emerald-500 flex items-center gap-1">● Synced</span>}
+                    {Boolean(isConnectedToRust) && <span className="text-[10px] text-emerald-500 flex items-center gap-1">● Synced</span>}
                   </div>
                   
                   <div className="grid grid-cols-2 gap-3 mb-4">

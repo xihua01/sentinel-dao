@@ -2,7 +2,7 @@ import { http, createConfig } from 'wagmi';
 import { arbitrumSepolia } from 'wagmi/chains';
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 
-const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || process.env.PROJECT_ID || 'SENTINEL_HACKATHON_2026';
+const projectId = '37cb9f34012cf241fd3079f6099bfc17';
 
 export const config = getDefaultConfig({
   appName: 'Sentinel RWA Dashboard',

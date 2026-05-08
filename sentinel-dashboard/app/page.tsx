@@ -66,6 +66,15 @@ export default function Home() {
     address: TOKEN_ADDRESS, abi: TOKEN_ABI, functionName: 'stylusLogic',
   });
 
+  // Read admin address INSIDE Rust/Stylus contract directly
+  const RUST_ABI = [{ name: 'getAdmin', type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'address' }] }] as const;
+  const { data: rustAdminAddress } = useReadContract({
+    address: stylusLogicAddress as `0x${string}`,
+    abi: RUST_ABI,
+    functionName: 'getAdmin',
+    query: { enabled: Boolean(stylusLogicAddress) }
+  });
+
   const { data: complianceRoleHash } = useReadContract({
     address: TOKEN_ADDRESS, abi: TOKEN_ABI, functionName: 'COMPLIANCE_ROLE',
   });
@@ -166,8 +175,12 @@ export default function Home() {
             <ConnectButton showBalance={false} accountStatus="address" chainStatus="icon" />
           </div>
           {Boolean(stylusLogicAddress) && (
-            <div className="text-[10px] font-mono text-slate-500 bg-slate-900/50 px-2 py-1 rounded border border-slate-800">
-              LOGIC ADDR: <span className="text-slate-400">{stylusLogicAddress as string}</span>
+            <div className="text-[10px] font-mono text-slate-500 bg-slate-900/50 px-2 py-1 rounded border border-slate-800 space-y-0.5">
+              <div>LOGIC ADDR: <span className="text-slate-400">{stylusLogicAddress as string}</span></div>
+              <div>RUST ADMIN: <span className={`${rustAdminAddress?.toString().toLowerCase() === TOKEN_ADDRESS.toLowerCase() ? 'text-emerald-400' : 'text-rose-400'}`}>
+                {rustAdminAddress ? rustAdminAddress as string : 'loading...'}
+                {rustAdminAddress?.toString().toLowerCase() === TOKEN_ADDRESS.toLowerCase() ? ' ✅' : ' ❌ MISMATCH!'}
+              </span></div>
             </div>
           )}
         </div>

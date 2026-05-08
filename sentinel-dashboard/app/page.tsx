@@ -62,6 +62,10 @@ export default function Home() {
     address: TOKEN_ADDRESS, abi: TOKEN_ABI, functionName: 'isConnected',
   });
 
+  const { data: stylusLogicAddress } = useReadContract({
+    address: TOKEN_ADDRESS, abi: TOKEN_ABI, functionName: 'stylusLogic',
+  });
+
   const { data: complianceRoleHash } = useReadContract({
     address: TOKEN_ADDRESS, abi: TOKEN_ABI, functionName: 'COMPLIANCE_ROLE',
   });
@@ -153,12 +157,19 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-mono font-bold ${isConnectedToRust ? "bg-emerald-950/50 border-emerald-500/50 text-emerald-400" : "bg-red-950/50 border-red-500/50 text-red-500"}`}>
-             <Zap className="w-3 h-3 fill-current" />
-             RUST POLICY ENGINE: {isConnectedToRust ? "ACTIVE" : "OFFLINE"}
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex items-center gap-4">
+            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-mono font-bold ${isConnectedToRust ? "bg-emerald-950/50 border-emerald-500/50 text-emerald-400" : "bg-red-950/50 border-red-500/50 text-red-500"}`}>
+               <Zap className="w-3 h-3 fill-current" />
+               RUST POLICY ENGINE: {isConnectedToRust ? "ACTIVE" : "OFFLINE"}
+            </div>
+            <ConnectButton showBalance={false} accountStatus="address" chainStatus="icon" />
           </div>
-          <ConnectButton showBalance={false} accountStatus="address" chainStatus="icon" />
+          {stylusLogicAddress && (
+            <div className="text-[10px] font-mono text-slate-500 bg-slate-900/50 px-2 py-1 rounded border border-slate-800">
+              LOGIC ADDR: <span className="text-slate-400">{stylusLogicAddress as string}</span>
+            </div>
+          )}
         </div>
       </header>
 

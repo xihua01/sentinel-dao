@@ -67,13 +67,18 @@ export default function Home() {
   });
 
   // Read admin address INSIDE Rust/Stylus contract directly
-  const RUST_ABI = [{ name: 'getAdmin', type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'address' }] }] as const;
+  const RUST_ABI = [
+    { name: 'getAdmin', type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'address' }] },
+    { name: 'init', type: 'function', stateMutability: 'nonpayable', inputs: [{ name: 'owner', type: 'address' }], outputs: [] }
+  ] as const;
   const { data: rustAdminAddress } = useReadContract({
     address: stylusLogicAddress as `0x${string}`,
     abi: RUST_ABI,
     functionName: 'getAdmin',
     query: { enabled: Boolean(stylusLogicAddress) }
   });
+
+  const isAdminMismatch = rustAdminAddress?.toString().toLowerCase() !== TOKEN_ADDRESS.toLowerCase();
 
   const { data: complianceRoleHash } = useReadContract({
     address: TOKEN_ADDRESS, abi: TOKEN_ABI, functionName: 'COMPLIANCE_ROLE',
@@ -105,6 +110,22 @@ export default function Home() {
         return Promise.resolve();
       },
       { loading: `Executing ${actionName}...`, success: 'Signature Request Sent', error: 'Aborted' }
+    );
+  };
+
+  const handleFixRustAdmin = () => {
+    if (!stylusLogicAddress) return;
+    toast.promise(
+      () => {
+        writeContract({
+          address: stylusLogicAddress as `0x${string}`,
+          abi: RUST_ABI,
+          functionName: 'init',
+          args: [TOKEN_ADDRESS as `0x${string}`],
+        });
+        return Promise.resolve();
+      },
+      { loading: 'Fixing Rust Admin...', success: 'Fix sent! Reload after confirmed.', error: 'Failed' }
     );
   };
 
@@ -150,6 +171,28 @@ export default function Home() {
   return (
     <main className="min-h-screen p-4 md:p-8 max-w-7xl mx-auto space-y-8 font-sans bg-slate-950 text-slate-200">
       
+      {/* === CRITICAL ALERT BANNER === */}
+      {isAdminMismatch && Boolean(rustAdminAddress) && (
+        <div className="flex items-center justify-between p-4 bg-rose-950/40 border border-rose-500/50 rounded-xl animate-pulse">
+          <div className="flex items-center gap-3">
+            <AlertTriangle className="w-5 h-5 text-rose-500 shrink-0" />
+            <div>
+              <p className="text-rose-400 font-bold text-sm">CRITICAL: Rust Contract Admin Mismatch</p>
+              <p className="text-rose-500/70 text-xs font-mono mt-0.5">
+                Rust Admin: {rustAdminAddress as string} ≠ Solidity: {TOKEN_ADDRESS}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={handleFixRustAdmin}
+            disabled={isPending}
+            className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-lg transition-colors shrink-0 ml-4"
+          >
+            🔧 FIX NOW
+          </button>
+        </div>
+      )}
+
       {/* === HEADER === */}
       <header className="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-800 pb-6">
         <div className="flex items-center gap-4">

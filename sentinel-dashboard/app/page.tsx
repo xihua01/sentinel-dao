@@ -74,9 +74,7 @@ export default function Home() {
             address: TOKEN_ADDRESS, 
             abi: TOKEN_ABI, 
             functionName: fnName, 
-            args: args,
-            maxFeePerGas: BigInt(100000000), 
-            maxPriorityFeePerGas: BigInt(100000000) 
+            args: args
         });
         return Promise.resolve();
       },

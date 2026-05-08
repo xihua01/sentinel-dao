@@ -86,9 +86,16 @@ export default function Home() {
   const getErrorMessage = (error: any) => {
     if (!error) return null;
     const msg = error.message || error.toString();
+    
+    // Check for common custom errors or revert reasons
     if (msg.includes("Transfer Denied")) return "Sentinel Firewall: Trust Score too low or Unauthorized";
     if (msg.includes("insufficient funds")) return "Insufficient Treasury Balance";
-    return "Policy Violation Detected";
+    
+    // Extract the revert reason if possible (usually after 'revert: ')
+    const revertReason = msg.split('revert:')[1]?.split('\n')[0] || msg.split('execution reverted:')[1]?.split('\n')[0];
+    if (revertReason) return `Contract Revert: ${revertReason.trim()}`;
+    
+    return msg.slice(0, 100) + "...";
   };
 
   const getScoreColor = (isWhitelisted: boolean, score: number) => {

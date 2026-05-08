@@ -60,6 +60,11 @@ export default function Home() {
 
   const { data: isConnectedToRust } = useReadContract({
     address: TOKEN_ADDRESS, abi: TOKEN_ABI, functionName: 'isConnected',
+  const COMPLIANCE_ROLE = '0x1634563a61f36402e861d8c114f08889d1e6b8ca2cf1ff08baed74cd5af3f604'; // keccak256("COMPLIANCE_ROLE")
+
+  const { data: hasComplianceRole } = useReadContract({
+    address: TOKEN_ADDRESS, abi: TOKEN_ABI, functionName: 'hasRole',
+    args: address ? [COMPLIANCE_ROLE, address] : undefined,
   });
 
   // Parsing Data
@@ -68,6 +73,10 @@ export default function Home() {
 
   // === HANDLERS ===
   const handleGuardianAction = (actionName: string, fnName: string, args: any[]) => {
+    if (!hasComplianceRole) {
+      toast.error("Access Denied: You don't have the Compliance Role");
+      return;
+    }
     toast.promise(
       () => {
         writeContract({ 
@@ -254,9 +263,14 @@ export default function Home() {
                   <Activity className="w-5 h-5" />
                   <h2 className="font-bold tracking-wider text-sm">TREASURY GUARD CONSOLE</h2>
                 </div>
-                <div className="flex items-center gap-1 bg-amber-950/50 text-amber-500 px-2 py-1 rounded border border-amber-900/50">
-                    <Lock className="w-3 h-3" />
-                    <span className="text-[10px] font-bold">GOVERNANCE ONLY</span>
+                <div className="flex flex-col items-end gap-1">
+                  <div className="flex items-center gap-1 bg-amber-950/50 text-amber-500 px-2 py-1 rounded border border-amber-900/50">
+                      <Lock className="w-3 h-3" />
+                      <span className="text-[10px] font-bold">GOVERNANCE ONLY</span>
+                  </div>
+                  <div className={`text-[9px] font-mono px-2 py-0.5 rounded border ${hasComplianceRole ? 'bg-emerald-950/30 text-emerald-500 border-emerald-900/50' : 'bg-rose-950/30 text-rose-500 border-rose-900/50'}`}>
+                    {hasComplianceRole ? '✅ COMPLIANCE AUTHORIZED' : '❌ NO ADMIN ACCESS'}
+                  </div>
                 </div>
               </div>
 

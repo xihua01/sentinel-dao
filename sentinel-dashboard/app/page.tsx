@@ -165,7 +165,7 @@ export default function Home() {
             </div>
             <ConnectButton showBalance={false} accountStatus="address" chainStatus="icon" />
           </div>
-          {stylusLogicAddress && (
+          {Boolean(stylusLogicAddress) && (
             <div className="text-[10px] font-mono text-slate-500 bg-slate-900/50 px-2 py-1 rounded border border-slate-800">
               LOGIC ADDR: <span className="text-slate-400">{stylusLogicAddress as string}</span>
             </div>

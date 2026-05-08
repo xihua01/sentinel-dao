@@ -62,11 +62,13 @@ export default function Home() {
     address: TOKEN_ADDRESS, abi: TOKEN_ABI, functionName: 'isConnected',
   });
 
-  const COMPLIANCE_ROLE = '0x1634563a61f36402e861d8c114f08889d1e6b8ca2cf1ff08baed74cd5af3f604'; // keccak256("COMPLIANCE_ROLE")
+  const { data: complianceRoleHash } = useReadContract({
+    address: TOKEN_ADDRESS, abi: TOKEN_ABI, functionName: 'COMPLIANCE_ROLE',
+  });
 
   const { data: hasComplianceRole } = useReadContract({
     address: TOKEN_ADDRESS, abi: TOKEN_ABI, functionName: 'hasRole',
-    args: address ? [COMPLIANCE_ROLE, address] : undefined,
+    args: address && complianceRoleHash ? [complianceRoleHash as `0x${string}`, address] : undefined,
   });
 
   // Parsing Data

@@ -1,6 +1,6 @@
 import SentinelABI from './abis/SentinelRWA.json';
 
 // Solidity Address
-export const TOKEN_ADDRESS = "0xb04c22a9635a4f74e972a2df60c5c2fefd98a327"; 
+export const TOKEN_ADDRESS = "0x86eFbE2b5aA87af051dea6585f7a8eD4C077B482"; 
 
 export const TOKEN_ABI = SentinelABI.abi;

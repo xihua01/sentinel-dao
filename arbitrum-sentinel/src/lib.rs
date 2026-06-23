@@ -14,6 +14,7 @@ sol_storage! {
         uint8 min_score_active; // Default: 30
         uint8 min_score_vip;    // Default: 80
         bool is_paused;         // Emergency Break
+        bool initialized;       // Security lock
     }
 }
 
@@ -21,10 +22,14 @@ sol_storage! {
 impl Sentinel {
     
     pub fn init(&mut self, owner: Address) {
+        if self.initialized.get() {
+            panic!("Already initialized");
+        }
         self.admin.set(owner);
         self.min_score_active.set(U8::from(30));
         self.min_score_vip.set(U8::from(80));
         self.is_paused.set(false);
+        self.initialized.set(true);
     }
 
     pub fn check_transfer(&self, from: Address, to: Address, amount: U256) -> bool {

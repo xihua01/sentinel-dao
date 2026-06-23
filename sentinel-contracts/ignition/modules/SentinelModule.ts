@@ -1,7 +1,7 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 
 // ⚠️ GANTI dengan alamat Rust dari Step 3
-const RUST_ADDRESS = "0xa8e25e53a9ab58e52adc4bd7088a6692bb393211";
+const RUST_ADDRESS = "0x5ac887736a10b6f63a5ad946c2c7d787f740cb3c";
 
 const SentinelFinalModule = buildModule("SentinelFinalModule", (m) => {
   const token = m.contract("SentinelRWA");
